@@ -1,0 +1,8 @@
+dogImages
+haardcascades
+lfw
+test_images
+*.zip
+.ipynb_checkpoints
+.vscode
+__pycache__
