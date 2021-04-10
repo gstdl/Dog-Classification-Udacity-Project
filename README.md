@@ -16,7 +16,7 @@ Assuming you have Python installed, the following are steps needed to run the ap
 
 ```
 $ git clone https://github.com/gstdl/Dog-Classification-Udacity-Project.git
-$ cd app
+$ cd Dog-Classification-Udacity-Project/app
 $ pip install -r requirements.txt
 $ streamlit run app.py
 ```
