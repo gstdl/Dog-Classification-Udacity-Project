@@ -7,7 +7,8 @@ import numpy as np
 import streamlit as st
 
 ## face detector
-face_cascade = cv2.CascadeClassifier('models/haarcascade_frontalface_alt.xml')
+face_cascade = cv2.CascadeClassifier("models/haarcascade_frontalface_alt.xml")
+
 
 def face_detector(img):
     img = np.asarray(img)
@@ -17,19 +18,22 @@ def face_detector(img):
 
 
 ## preprocessing for pytorch models
-def transform_img(img): 
-    preprocess = transforms.Compose([transforms.Resize([224, 224]), 
-                                     transforms.ToTensor(),
-                                     transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                                          std=[0.229, 0.224, 0.225]),
-                                    ])
-    
+def transform_img(img):
+    preprocess = transforms.Compose(
+        [
+            transforms.Resize([224, 224]),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ]
+    )
+
     return preprocess(img).unsqueeze(0)
 
 
 ## dog detector
 VGG16 = models.vgg16(pretrained=True)
 VGG16.eval()
+
 
 def dog_detector(img):
     pred_proba = VGG16(img).detach().numpy()
@@ -38,15 +42,18 @@ def dog_detector(img):
     return pred
 
 
-## breed 
-model_transfer = torch.load('models/model_transfer.pth', map_location = torch.device('cpu'))
+## breed
+model_transfer = torch.load(
+    "models/model_transfer.pth", map_location=torch.device("cpu")
+)
 model_transfer.eval()
-with open('models/classes.json', 'r') as f:
+with open("models/classes.json", "r") as f:
     class_names = json.load(f)
+
 
 def predict_breed_transfer(img):
     pred_proba = model_transfer(img)
-    _, pred = torch.topk(pred_proba, dim = 1, k = 1)
+    _, pred = torch.topk(pred_proba, dim=1, k=1)
     pred = str(pred.detach().numpy()[0][0])
     pred = class_names[pred]
     return pred
@@ -60,9 +67,9 @@ def run_app(img):
     if dog + human > 0:
         dog_breed = predict_breed_transfer(img)
         if dog:
-            st.header('hello, dog!')
+            st.header("hello, dog!")
         else:
-            st.header('hello, human!')
-        st.header(f'You look like a {dog_breed}')
+            st.header("hello, human!")
+        st.header(f"You look like a {dog_breed}")
     else:
-        st.header('um, what are you? Are you an alien!')
+        st.header("um, what are you? Are you an alien!")
